@@ -3,7 +3,7 @@ import glob
 import numpy as np
 from pathlib import Path
 
-IMG_PATH = "samples/1.jpeg"
+IMG_PATH = "samples/2.jpeg"
 img = cv2.imread(IMG_PATH)
 original = img.copy()
 
@@ -56,8 +56,10 @@ cv2.drawContours(img, contours, -1, (0, 255, 0), 5)
 final_image = cv2.cvtColor(final_image, cv2.COLOR_BGR2GRAY)
 
 #Thresholding
-#thr_img = cv2.dilate(final_image, np.ones((2, 2), np.uint8))
-thr_img = cv2.adaptiveThreshold(final_image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 19, 8)
+kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1, 1))
+morph = cv2.morphologyEx(final_image, cv2.MORPH_CLOSE, kernel)
+morph = cv2.morphologyEx(morph, cv2.MORPH_OPEN, kernel)
+thr_img = cv2.adaptiveThreshold(morph, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 15, 5)
 
 cv2.imshow("Final image", final_image)
 cv2.imshow("edged", edged_img)
