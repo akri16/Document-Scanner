@@ -3,7 +3,7 @@ import utils
 import numpy as np
 from PIL import Image, ImageEnhance
 
-IMG_PATH = "samples/2.jpeg"
+IMG_PATH = "samples/4.jpeg"
 img = cv2.imread(IMG_PATH)
 original = img.copy()
 
@@ -39,11 +39,11 @@ M = cv2.getPerspectiveTransform(approx, pts2)
 final_image = cv2.warpPerspective(original, M, (400, 400))
 cv2.drawContours(img, c, -1, (0, 255, 0), 5)
 
-final_image = cv2.fastNlMeansDenoisingColored(cv2.fastNlMeansDenoisingColored(final_image))
-final_image_gray = cv2.cvtColor(final_image, cv2.COLOR_BGR2GRAY)
+final_image_noise_free = cv2.fastNlMeansDenoisingColored(cv2.fastNlMeansDenoisingColored(final_image))
+final_image_gray = cv2.cvtColor(final_image_noise_free, cv2.COLOR_BGR2GRAY)
 
 #Removing Disconnectivities
-morph = utils.open_close(final_image, (1, 1))
+morph = utils.open_close(final_image_noise_free, (1, 1))
 
 img = utils.resize(img, 400)
 im_output = utils.enhance(morph, 1.2, 8, 10)
